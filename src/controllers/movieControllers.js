@@ -28,16 +28,35 @@ const movies = [
 ];
 
 const getMovies = (req, res) => {
-    database
-      .query("select * from movies")
-      .then(([movies]) => {
-        res.json(movies); // use res.json instead of console.log
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
+  database
+    .query("select * from movies")
+    .then(([movies]) => {
+      res.json(movies); // use res.json instead of console.log
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+const postMovie = (req, res) => {
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "INSERT INTO movies(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)",
+      [title, director, year, color, duration]
+      )
+      .then(([result]) => {
+        res.status(201).send({ id: result.insterId });
+        console.log(result.insertId)
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 
 // version où l'on va rechercher le film via une requête SQL en premier paramètre de la méthode query qui SELECT par l'id.
 // Pratique peu sûre, d'injecter l'id dans une requête SQL. On va donc utiliser une requête préparée.
@@ -72,4 +91,5 @@ const getMovieById = (req, res) => {
 module.exports = {
   getMovies,
   getMovieById,
+  postMovie,
 };
