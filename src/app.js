@@ -13,12 +13,15 @@ const usersControllers = require("./controllers/usersControllers");
 app.get("/api/movies", movieControllers.getMovies);
 app.get("/api/movies/:id", movieControllers.getMovieById);
 app.post("/api/movies", movieControllers.postMovie);
+app.put("/api/movies/:id", movieControllers.updateMovie);
 
 // Créer une route GET /api/users, cette route doit renvoyer un statut 200
 // et une liste d'utilisateurs de la base de données au format json
+// création des routes post et put pour créer un nouvel utlisateur et le modifier.
 
 app.get("/api/users", usersControllers.getUsers);
 app.post("/api/users", usersControllers.postUser);
+app.put("/api/users/:id", usersControllers.updateUser);
 
 //Créez une route GET /api/users/:id qui renverra uniquement l'utilisateur
 //de la base de données correspondant à l'identifiant défini dans l'url

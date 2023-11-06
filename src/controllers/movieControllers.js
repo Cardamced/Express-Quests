@@ -57,6 +57,25 @@ const postMovie = (req, res) => {
     });
 };
 
+const updateMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "UPDATE movies SET title = ?, director = ?, year = ?, color = ?, duration = ? WHERE id = ?",
+      [title, director, year, color, duration, id]
+      )
+      .then(([result]) => {
+        res.status(201).send({ id: result.insterId });
+        console.log(result.insertId)
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+}
+
 
 // version où l'on va rechercher le film via une requête SQL en premier paramètre de la méthode query qui SELECT par l'id.
 // Pratique peu sûre, d'injecter l'id dans une requête SQL. On va donc utiliser une requête préparée.
@@ -92,4 +111,5 @@ module.exports = {
   getMovies,
   getMovieById,
   postMovie,
+  updateMovie,
 };
