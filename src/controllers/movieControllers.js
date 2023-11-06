@@ -1,3 +1,5 @@
+const database = require("../../database");
+
 const movies = [
   {
     id: 1,
@@ -26,19 +28,45 @@ const movies = [
 ];
 
 const getMovies = (req, res) => {
-  res.json(movies);
-};
+    database
+      .query("select * from movies")
+      .then(([movies]) => {
+        res.json(movies); // use res.json instead of console.log
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
 
+// version où l'on va rechercher le film via une requête SQL en premier paramètre de la méthode query qui SELECT par l'id.
+// Pratique peu sûre, d'injecter l'id dans une requête SQL. On va donc utiliser une requête préparée.
+
+// const getMovieById = (req, res) => {
+//   const id = parseInt(req.params.id);
+//   database
+//     .query(`select * from movies where id = ${id}`)
+//     .then(...)
+//     .catch(...);
+// };
+
+
+// Méthode avec requête préparée (aka avec les "?")
 const getMovieById = (req, res) => {
   const id = parseInt(req.params.id);
-
-  const movie = movies.find((movie) => movie.id === id);
-
-  if (movie != null) {
-    res.json(movie);
-  } else {
-    res.status(404).send("Not Found");
-  }
+  database
+    .query("select * from movies where id = ?", [id])
+    .then(([movies]) => {
+      if (movies[0] != null) {
+        res.json(movies[0]);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 };
 
 module.exports = {
