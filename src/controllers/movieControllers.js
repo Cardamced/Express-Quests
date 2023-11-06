@@ -76,6 +76,24 @@ const updateMovie = (req, res) => {
     });
 }
 
+const deleteMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  database
+    .query("delete from movies where id = ?", [id])
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
 
 // version où l'on va rechercher le film via une requête SQL en premier paramètre de la méthode query qui SELECT par l'id.
 // Pratique peu sûre, d'injecter l'id dans une requête SQL. On va donc utiliser une requête préparée.
@@ -112,4 +130,5 @@ module.exports = {
   getMovieById,
   postMovie,
   updateMovie,
+  deleteMovie
 };

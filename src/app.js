@@ -14,6 +14,7 @@ app.get("/api/movies", movieControllers.getMovies);
 app.get("/api/movies/:id", movieControllers.getMovieById);
 app.post("/api/movies", movieControllers.postMovie);
 app.put("/api/movies/:id", movieControllers.updateMovie);
+app.delete("/api/movies/:id", movieControllers.deleteMovie);
 
 // Créer une route GET /api/users, cette route doit renvoyer un statut 200
 // et une liste d'utilisateurs de la base de données au format json
@@ -22,8 +23,9 @@ app.put("/api/movies/:id", movieControllers.updateMovie);
 app.get("/api/users", usersControllers.getUsers);
 app.post("/api/users", usersControllers.postUser);
 app.put("/api/users/:id", usersControllers.updateUser);
+app.delete("/api/users/:id", usersControllers.deleteUser);
 
-//Créez une route GET /api/users/:id qui renverra uniquement l'utilisateur
+//Créer une route GET /api/users/:id qui renverra uniquement l'utilisateur
 //de la base de données correspondant à l'identifiant défini dans l'url
 //S'il y a un utilisateur qui correspond aux paramètres, renvoie une réponse
 //avec un statut 200 et l'utilisateur correspondant en tant qu'objet json
