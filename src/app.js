@@ -1,15 +1,18 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const movieControllers = require("./controllers/movieControllers");
+const usersControllers = require("./controllers/usersControllers");
+const { hashPassword } = require("./auth.js");
 
 app.use(express.json());
 
-const port = process.env.APP_PORT || 3000;
+const bonjour = (req, res) => {
+    res.send("Bienvenue sur la page de mes films préférés")
+}
 
-const movieControllers = require("./controllers/movieControllers");
-const usersControllers = require("./controllers/usersControllers");
 
-
+app.get("/", bonjour);
 app.get("/api/movies", movieControllers.getMovies);
 app.get("/api/movies/:id", movieControllers.getMovieById);
 app.post("/api/movies", movieControllers.postMovie);
@@ -21,8 +24,8 @@ app.delete("/api/movies/:id", movieControllers.deleteMovie);
 // création des routes post et put pour créer un nouvel utlisateur et le modifier.
 
 app.get("/api/users", usersControllers.getUsers);
-app.post("/api/users", usersControllers.postUser);
-app.put("/api/users/:id", usersControllers.updateUser);
+app.post("/api/users", hashPassword, usersControllers.postUser);
+app.put("/api/users/:id", hashPassword, usersControllers.updateUser);
 app.delete("/api/users/:id", usersControllers.deleteUser);
 
 //Créer une route GET /api/users/:id qui renverra uniquement l'utilisateur
@@ -33,5 +36,5 @@ app.delete("/api/users/:id", usersControllers.deleteUser);
 
 app.get("/api/users/:id", usersControllers.getUserById);
 
-
+  
 module.exports = app;

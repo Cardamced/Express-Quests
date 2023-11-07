@@ -1,7 +1,7 @@
 const database = require("../../database");
 
 const getUsers = (req, res) => {
-  let sql = "select * from users";
+  let sql = "SELECT * FROM users";
   const sqlValues = [];
 
   if (req.query.language && req.query.city) {
@@ -29,7 +29,7 @@ const getUsers = (req, res) => {
 const getUserById = (req, res) => {
   const id = parseInt(req.params.id);
   database
-    .query("select * from users where id = ?", [id])
+    .query("SELECT id, firstname, lastname, email, city, language FROM users WHERE id = ?", [id])
     .then(([users]) => {
       if (users[0] != null) {
         res.json(users[0]);
@@ -44,12 +44,12 @@ const getUserById = (req, res) => {
 };
 
 const postUser = (req, res) => {
-  const { firstname, lastname, email, city, language } = req.body;
+  const { firstname, lastname, email, city, language, hashedPassword } = req.body;
 
   database
     .query(
-      "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
-      [firstname, lastname, email, city, language]
+      "INSERT INTO users(firstname, lastname, email, city, language, password) VALUES (?, ?, ?, ?, ?, ?)",
+      [firstname, lastname, email, city, language, hashedPassword]
     )
     .then(([result]) => {
       res.status(201).send({ id: result.insterId });
@@ -63,12 +63,12 @@ const postUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const id = parseInt(req.params.id);
-  const { firstname, lastname, email, city, language } = req.body;
+  const { firstname, lastname, email, city, language, hashPassword } = req.body;
 
   database
     .query(
-      "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ? WHERE id = ?",
-      [firstname, lastname, email, city, language, id]
+      "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ?, password = ? WHERE id = ?",
+      [firstname, lastname, email, city, language, hashPassword, id]
     )
     .then(([result]) => {
       res.status(201).send({ id: result.insterId });
