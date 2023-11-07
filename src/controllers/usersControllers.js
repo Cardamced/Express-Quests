@@ -1,14 +1,28 @@
 const database = require("../../database");
 
 const getUsers = (req, res) => {
+  let sql = "select * from users";
+  const sqlValues = [];
+
+  if (req.query.language && req.query.city) {
+    sql += " where language = ? AND city = ?";
+    sqlValues.push(req.query.language, req.query.city);
+  } else if (req.query.language) {
+      sql += " where language = ?";
+      sqlValues.push(req.query.language);
+  } else if (req.query.city) {
+    sql += " where city = ?";
+    sqlValues.push(req.query.city);
+  }
+
   database
-    .query("select * from users")
+    .query(sql, sqlValues)
     .then(([users]) => {
       res.status(200).json(users);
     })
     .catch((err) => {
       console.error(err);
-      res.sendStatus(500);
+      res.sendStatus(500).send("Une erreur est appartue lors de la récupération des utilisateurs");
     });
 };
 
@@ -36,14 +50,14 @@ const postUser = (req, res) => {
     .query(
       "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
       [firstname, lastname, email, city, language]
-      )
-      .then(([result]) => {
-        res.status(201).send({ id: result.insterId });
-        console.log(result.insertId)
+    )
+    .then(([result]) => {
+      res.status(201).send({ id: result.insterId });
+      console.log(result.insertId)
     })
     .catch((err) => {
       console.error(err);
-      res.sendStatus(500);
+      res.sendStatus(500).send("error retrieving data from database");
     });
 };
 
