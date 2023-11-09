@@ -4,6 +4,8 @@ const app = express();
 const movieControllers = require("./controllers/movieControllers");
 const usersControllers = require("./controllers/usersControllers");
 const { hashPassword } = require("./auth.js");
+const validateMovie = require("./middlewares/validateMovie");
+const validateUser = require("./middlewares/validateUser");
 
 app.use(express.json());
 
@@ -15,8 +17,8 @@ const bonjour = (req, res) => {
 app.get("/", bonjour);
 app.get("/api/movies", movieControllers.getMovies);
 app.get("/api/movies/:id", movieControllers.getMovieById);
-app.post("/api/movies", movieControllers.postMovie);
-app.put("/api/movies/:id", movieControllers.updateMovie);
+app.post("/api/movies", validateMovie, movieControllers.postMovie);
+app.put("/api/movies/:id", validateMovie, movieControllers.updateMovie);
 app.delete("/api/movies/:id", movieControllers.deleteMovie);
 
 // Créer une route GET /api/users, cette route doit renvoyer un statut 200
@@ -24,8 +26,8 @@ app.delete("/api/movies/:id", movieControllers.deleteMovie);
 // création des routes post et put pour créer un nouvel utlisateur et le modifier.
 
 app.get("/api/users", usersControllers.getUsers);
-app.post("/api/users", hashPassword, usersControllers.postUser);
-app.put("/api/users/:id", hashPassword, usersControllers.updateUser);
+app.post("/api/users", validateUser, hashPassword, usersControllers.postUser);
+app.put("/api/users/:id", validateUser, hashPassword, usersControllers.updateUser);
 app.delete("/api/users/:id", usersControllers.deleteUser);
 
 //Créer une route GET /api/users/:id qui renverra uniquement l'utilisateur
